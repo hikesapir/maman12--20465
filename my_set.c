@@ -1,62 +1,117 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define ENLARGE_SIZE(CURR_SIZE) (CURR_SIZE) + 10
+#define FALSE 0
+#define TRUE 1
+#define NO_SPACE_CODE 1
+#define ENLARGE_SIZE(CURR_length) (CURR_length) + 10
 
-int get_set(int **group, int *curr_size);
-void print_set(int *group, int size);
+/*
+    Creates a set from the given integers
+    **set - the set's refferns
+    *set_length - the set_length's refferns
+*/
+int get_set(int **set, int *set_length);
+
+/*
+    Prints the set in order without duplicates
+    *set - the set
+    length - the set's length
+*/
+void print_set(int *set, int length);
+
+/*
+    Checks if the given value exists in the set between two specific indexes
+    *set - the set
+    start_idx - the index to start check from
+    end_idx - the index to stop check
+    value - value to check.
+*/
+int is_exists(int *set, int start_idx, int end_idx, int value);
 
 int main()
 {
-    int error_code;
-    int group_size = ENLARGE_SIZE(0);
-    int *group = (int *)malloc(group_size * sizeof(int));
+    int error_code, set_length;
+    int *set;
 
-    error_code = get_set(&group, &group_size);
+    error_code = get_set(&set, &set_length);
     if (error_code == 0)
     {
-        print_set(group, group_size);
+        print_set(set, set_length);
     }
-    
-    free(group);
+
+    free(set);
     return error_code;
 }
 
-int get_set(int **group, int *curr_size)
+int get_set(int **set, int *set_length)
 {
-    int *group_p;
-    int user_input, counter = 0;
-    printf("Group_size is: %d\n", *curr_size);
-    printf("Please enter numbers\n");
-    while ((scanf("%d", &user_input)) != EOF)
-    {
-        (*group)[counter] = user_input;
-        printf("the counter is: %d  user input is: %d\n", counter, (*group)[counter]);
+    int *set_p;
+    int counter = 0;
 
-        if (counter == *curr_size)
+    *set_length = ENLARGE_SIZE(0);
+    *set = (int *)malloc(*set_length * sizeof(int));
+    if (set_p == NULL)
+    {
+        printf("No space\n");
+        return NO_SPACE_CODE;
+    }
+    printf("Please enter numbers\n");
+    while ((scanf("%d", &(*set)[counter])) != EOF)
+    {
+
+        printf("set[%d] => %d\n", counter, (*set)[counter]);
+
+        /* checks if realloc is needed*/
+        if (counter == *set_length)
         {
-            *curr_size = ENLARGE_SIZE(*curr_size);
-            group_p = (int *)realloc(*group, *curr_size * sizeof(int));
-            if (group_p == NULL)
+            *set_length = ENLARGE_SIZE(*set_length);
+            set_p = (int *)realloc(*set, *set_length * sizeof(int));
+            if (set_p == NULL)
             {
                 printf("No space\n");
-                return 1;
+                return NO_SPACE_CODE;
             }
-            printf("Group_size is: %d\n", *curr_size);
-            *group = group_p;
+            *set = set_p;
         }
 
         counter++;
     }
 
+    *set_length = counter;
+    set_p = (int *)realloc(*set, *set_length * sizeof(int));
+    if (set_p == NULL)
+    {
+        printf("No space\n");
+        return NO_SPACE_CODE;
+    }
+    *set = set_p;
+
     return 0;
 }
 
-void print_set(int *group, int size)
+void print_set(int *set, int length)
 {
-    int i = 0;
-    while (i < size)
+    int i;
+    for (i = 0; i < length; i++)
     {
-        printf("%d => %d\n", i, group[i]);
-        i++;
+        if (!is_exists(set, 0, i, set[i]))
+        {
+            printf("%d ", set[i]);
+        }
     }
+    printf("\n");
+}
+
+int is_exists(int *set, int start_idx, int end_idx, int value)
+{
+    int i;
+    for (i = start_idx; i < end_idx; i++)
+    {
+        if (set[i] == value)
+        {
+            return TRUE;
+        }
+    }
+
+    return FALSE;
 }
