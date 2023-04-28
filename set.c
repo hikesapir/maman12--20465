@@ -14,7 +14,6 @@
     @param end_idx - the index to stop check
     @param value - value to check.
 */
-
 int is_exists(int *set, int start_idx, int end_idx, int value)
 {
     int i;
@@ -25,6 +24,7 @@ int is_exists(int *set, int start_idx, int end_idx, int value)
             return TRUE;
         }
     }
+
     return FALSE;
 }
 
@@ -37,6 +37,7 @@ int get_set(int **set, int *set_length)
 {
     int *temp;
     int counter = 0;
+
     *set_length = ENLARGE_SIZE(0);
     *set = (int *)malloc(*set_length * sizeof(int));
     if (*set == NULL)
@@ -44,10 +45,10 @@ int get_set(int **set, int *set_length)
         printf("No space\n");
         return NO_SPACE_CODE;
     }
-
     printf("Please enter numbers\n");
     while ((scanf("%d", &(*set)[counter])) != EOF)
     {
+
         printf("%d added successfully\n", (*set)[counter]);
 
         /* checks if realloc is needed*/
@@ -55,13 +56,11 @@ int get_set(int **set, int *set_length)
         {
             *set_length = ENLARGE_SIZE(*set_length);
             temp = (int *)realloc(*set, *set_length * sizeof(int));
-          
             if (temp == NULL)
             {
                 printf("No space\n");
                 return NO_SPACE_CODE;
             }
-          
             *set = temp;
         }
 
@@ -70,13 +69,11 @@ int get_set(int **set, int *set_length)
 
     *set_length = counter;
     temp = (int *)realloc(*set, *set_length * sizeof(int));
-
     if (temp == NULL)
     {
         printf("No space\n");
         return NO_SPACE_CODE;
     }
-
     *set = temp;
 
     return 0;
@@ -91,7 +88,6 @@ void print_set(int *set, int length)
 {
     int i;
     printf("The set is: \n");
-
     for (i = 0; i < length; i++)
     {
         if (!is_exists(set, 0, i, set[i]))
@@ -99,6 +95,5 @@ void print_set(int *set, int length)
             printf("%d ", set[i]);
         }
     }
-
     printf("\n");
 }
